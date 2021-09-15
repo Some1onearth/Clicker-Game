@@ -24,15 +24,15 @@ public class News : MonoBehaviour
         {
             news1.text = "Government have proven to be hiding the truth!";
         }
-        if (sheepCount >= 1000)
+        if (sheepCount >= 200)
         {
             news1.text = "Newly discovered 6G in development, beware the new virus: Tooheysnuvirus!";
         }
-        if (sheepCount >= 4000)
+        if (sheepCount >= 500)
         {
             news1.text = "Choyner found to be the source of all problems!";
         }
-        if (sheepCount >= 100000)
+        if (sheepCount >= 2000)
         {
             news1.text = "Cancel culture is wrong, these are the people responsible for that creation!";
         }

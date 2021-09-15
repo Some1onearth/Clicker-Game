@@ -9,8 +9,8 @@ public class ButtonManager : MonoBehaviour
     public static int research = 20;
     public static int avoid5G = 80;
     public static int postTwit = 150;
-    public static int uploadVideo = 4000;
-    public static int stream = 100000;
+    public static int uploadVideo = 400;
+    public static int stream = 2000;
     public static int hotTake = 100;
     public static int conspiracySpreadPlus = 0;
     public static int conspiracySpreadPerSec = 0;
@@ -22,9 +22,16 @@ public class ButtonManager : MonoBehaviour
     [SerializeField] Text videoUICounter;
     [SerializeField] Text streamUICounter;
     [SerializeField] Text hotTakeUICounter;
+
+   // public static ButtonManager buttMan;
+
     // Start is called before the first frame update
     void Start()
     {
+        if (autoSpread == false)
+        {
+            StartCoroutine(ConpiracySpreadAuto());
+        }
         conspiracySpread = PlayerPrefs.GetInt("conspiracies", 0); //loads in saved clicks
         UpdateConspiracyText();
         research = PlayerPrefs.GetInt("research", 20);
@@ -33,18 +40,17 @@ public class ButtonManager : MonoBehaviour
         UpdateAvoid5GText();
         postTwit = PlayerPrefs.GetInt("twit", 150);
         UpdateTwitText();
-        uploadVideo = PlayerPrefs.GetInt("video", 4000);
+        uploadVideo = PlayerPrefs.GetInt("video", 400);
         UpdateVideoText();
-        stream = PlayerPrefs.GetInt("strim", 100000);
+        stream = PlayerPrefs.GetInt("strim", 2000);
         UpdateStreamText();
         hotTake = PlayerPrefs.GetInt("hottake", 100);
         UpdateHotTakeText();
         conspiracySpreadPlus = PlayerPrefs.GetInt("conspiracySpreadPlus", 0);
+        conspiracySpreadPerSec = PlayerPrefs.GetInt("conspiracyPerSec", 0);
     }
     private void Update()
     {
-        conspiracySpread = Mathf.Max(0, conspiracySpread);
-
         UpdateConspiracyText();
 
         if(autoSpread == false)
@@ -116,7 +122,7 @@ public class ButtonManager : MonoBehaviour
         {
             conspiracySpread -= uploadVideo;
             uploadVideo *= 2;
-            conspiracySpreadPerSec += 2;
+            conspiracySpreadPerSec += 5;
             PlayerPrefs.SetInt("conspiracyPerSec", conspiracySpreadPerSec);
             Debug.Log(uploadVideo + "You have spouted your opinions");
 
@@ -132,7 +138,7 @@ public class ButtonManager : MonoBehaviour
         {
             conspiracySpread -= stream;
             stream *= 2;
-            conspiracySpreadPerSec += 5;
+            conspiracySpreadPerSec += 50;
             PlayerPrefs.SetInt("conspiracyPerSec", conspiracySpreadPerSec);
             Debug.Log(stream + "You engaged with your sheep");
 
@@ -147,7 +153,12 @@ public class ButtonManager : MonoBehaviour
         if (conspiracySpread >= hotTake)
         {
             conspiracySpread -= hotTake;
-            conspiracySpread = conspiracySpread + hotTake* Random.Range(0, 2);
+
+            if(Random.Range(0,2) == 1)
+            {
+                conspiracySpread += hotTake*2;
+            }
+
             hotTake *= 2;
             Debug.Log(hotTake + "You have stated your risky opinion");
 
@@ -195,7 +206,7 @@ public class ButtonManager : MonoBehaviour
     {
         if (postTwit != 150)
         {
-            twitUICounter.text = postTwit + " \n<size=46>Post more Twit</size>";
+            twitUICounter.text = postTwit + " \n<size=46>Post more Twits</size>";
         }
         else
         {
@@ -204,7 +215,7 @@ public class ButtonManager : MonoBehaviour
     }
     void UpdateVideoText()
     {
-        if (uploadVideo != 4000)
+        if (uploadVideo != 400)
         {
             videoUICounter.text = uploadVideo + " \n<size=44>Upload more Bideos</size>";
         }
@@ -215,7 +226,7 @@ public class ButtonManager : MonoBehaviour
     }
     void UpdateStreamText()
     {
-        if (stream != 100000)
+        if (stream != 2000)
         {
             streamUICounter.text = stream + " \n<size=46>Strim</size>";
         }
@@ -242,8 +253,8 @@ public class ButtonManager : MonoBehaviour
         research = 20;
         avoid5G = 80;
         postTwit = 150;
-        uploadVideo = 4000;
-        stream = 100000;
+        uploadVideo = 400;
+        stream = 2000;
         hotTake = 100;
         conspiracySpreadPlus = 0;
         conspiracySpreadPerSec = 0;
@@ -253,8 +264,24 @@ public class ButtonManager : MonoBehaviour
         PlayerPrefs.SetInt("twit", postTwit);
         PlayerPrefs.SetInt("video", uploadVideo);
         PlayerPrefs.SetInt("strim", stream);
+        PlayerPrefs.SetInt("hottake", hotTake);
         PlayerPrefs.SetInt("conspiracySpreadPlus", conspiracySpreadPlus);
         PlayerPrefs.SetInt("conspiracyPerSec", conspiracySpreadPerSec);
+        UpdateAll();
+    }
+    IEnumerator ConpiracySpreadAuto()
+    {
+        autoSpread = true;
+        conspiracySpread += conspiracySpreadPerSec;
+        
+        UpdateAll();
+        UpgradeManager.theUpMan.UpdateAll();
+        yield return new WaitForSecondsRealtime(1);
+        autoSpread = false;
+    }
+
+    void UpdateAll()
+    {
         UpdateConspiracyText();
         UpdateResearchText();
         UpdateAvoid5GText();
@@ -262,12 +289,6 @@ public class ButtonManager : MonoBehaviour
         UpdateVideoText();
         UpdateStreamText();
         UpdateHotTakeText();
-    }
-    IEnumerator ConpiracySpreadAuto()
-    {
-        conspiracySpread += conspiracySpreadPerSec;
-        yield return new WaitForSecondsRealtime(1);
-        autoSpread = false;
     }
     public void ExitTheGame()
     {

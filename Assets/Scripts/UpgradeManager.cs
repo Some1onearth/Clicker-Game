@@ -6,32 +6,31 @@ using UnityEngine.UI;
 public class UpgradeManager : MonoBehaviour
 {
     public Button research, avoid5G, twit, video, stream, hotTake;
-    int conspiraciesSpread;
+    public GameObject hotTakeObj, streamObj;
+    public static UpgradeManager theUpMan; //allows this script to be accessed by other scripts and therefore its' functions to be done.
+
     void Start()
     {
-        conspiraciesSpread = PlayerPrefs.GetInt("conspiracies");
-        unlockResearch();
-        unlockAvoid5G();
-        unlockTwit();
-        unlockVideo();
-        unlockStream();
-        unlockHotTake();
+        if(theUpMan == null)
+        {
+            theUpMan = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+        //above makes sure there aren't more than one instance of this script running
         
+        UpdateAll();
     }
     void Update()
     {
-        conspiraciesSpread = PlayerPrefs.GetInt("conspiracies");
-        unlockResearch();
-        unlockAvoid5G();
-        unlockTwit();
-        unlockVideo();
-        unlockStream();
-        unlockHotTake();
+        UpdateAll();
     }
     #region Unlocks
     public void unlockResearch()
     {
-        if (conspiraciesSpread >= ButtonManager.research)
+        if (ButtonManager.conspiracySpread >= ButtonManager.research)
         {
             research.interactable = true;
         }
@@ -42,7 +41,7 @@ public class UpgradeManager : MonoBehaviour
     }
     public void unlockAvoid5G()
     {
-        if (conspiraciesSpread >= ButtonManager.avoid5G)
+        if (ButtonManager.conspiracySpread >= ButtonManager.avoid5G)
         {
             avoid5G.interactable = true;
         }
@@ -53,7 +52,7 @@ public class UpgradeManager : MonoBehaviour
     }
     public void unlockTwit()
     {
-        if (conspiraciesSpread >= ButtonManager.postTwit)
+        if (ButtonManager.conspiracySpread >= ButtonManager.postTwit)
         {
             twit.interactable = true;
         }
@@ -64,7 +63,7 @@ public class UpgradeManager : MonoBehaviour
     }
     public void unlockVideo()
     {
-        if (conspiraciesSpread >= ButtonManager.uploadVideo)
+        if (ButtonManager.conspiracySpread >= ButtonManager.uploadVideo)
         {
             video.interactable = true;
         }
@@ -75,9 +74,10 @@ public class UpgradeManager : MonoBehaviour
     }
     public void unlockStream()
     {
-        if (conspiraciesSpread >= ButtonManager.stream)
+        if (ButtonManager.conspiracySpread >= ButtonManager.stream)
         {
             stream.interactable = true;
+            streamObj.SetActive(true);
         }
         else
         {
@@ -86,14 +86,25 @@ public class UpgradeManager : MonoBehaviour
     }
     public void unlockHotTake()
     {
-        if (conspiraciesSpread >= ButtonManager.hotTake)
+        if (ButtonManager.conspiracySpread >= ButtonManager.hotTake)
         {
             hotTake.interactable = true;
+            hotTakeObj.SetActive(true);
         }
         else
         {
             hotTake.interactable = false;
+            hotTakeObj.SetActive(false);
         }
     }
     #endregion
+    public void UpdateAll()
+    {
+        unlockResearch();
+        unlockAvoid5G();
+        unlockTwit();
+        unlockVideo();
+        unlockStream();
+        unlockHotTake();
+    }
 }

@@ -582,7 +582,7 @@ ScriptsOnlyBuild:
     className: TMP_SubMeshUI
   - hash:
       serializedVersion: 2
-      Hash: 26c9e2279f6fcd0fa02ba92cda9c4712
+      Hash: e058297908b0f0d1fa14a455491d1f02
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: UpgradeManager
